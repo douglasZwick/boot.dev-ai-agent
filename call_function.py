@@ -4,6 +4,8 @@ from functions.get_files_info import *
 from functions.get_file_content import *
 from functions.write_file import *
 from functions.run_python_file import *
+from functions.report_success import *
+from functions.report_failure import *
 
 
 available_functions = types.Tool(
@@ -12,8 +14,20 @@ available_functions = types.Tool(
     schema_get_file_content,
     schema_write_file,
     schema_run_python_file,
+    schema_report_success,
   ],
 )
+
+available_functions_final = types.Tool(
+  function_declarations=[
+    schema_report_success,
+    schema_report_failure,
+  ]
+)
+
+
+def get_available_functions(max_iterations: int, current_index: int) -> types.Tool:
+  return available_functions if current_index + 1 < max_iterations else available_functions_final
 
 
 def call_function(function_call: types.FunctionCall, verbose: bool=False) -> types.Content:
@@ -30,6 +44,7 @@ def call_function(function_call: types.FunctionCall, verbose: bool=False) -> typ
     "get_file_content": get_file_content,
     "write_file": write_file,
     "run_python_file": run_python_file,
+    "report_failure": report_failure,
   }
 
   if name not in function_map:
